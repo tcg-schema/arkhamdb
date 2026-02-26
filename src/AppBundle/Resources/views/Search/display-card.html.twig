@@ -10,6 +10,61 @@
 	</script>
 {% endblock %}
 
+{% block json_ld %}
+{% set type_mapping = {
+	'investigator': 'ah:InvestigatorType',
+	'asset': 'ah:AssetType',
+	'event': 'ah:EventType',
+	'skill': 'ah:SkillType',
+	'enemy': 'ah:EnemyType',
+	'treachery': 'ah:TreacheryType',
+	'location': 'ah:LocationType',
+	'act': 'ah:ActType',
+	'agenda': 'ah:AgendaType',
+	'enemy_location': 'ah:EnemyType'
+} %}
+{% set side_mapping = {
+	'investigator': 'lcg:PlayerCard',
+	'asset': 'lcg:PlayerCard',
+	'event': 'lcg:PlayerCard',
+	'skill': 'lcg:PlayerCard',
+	'enemy': 'lcg:EncounterCard',
+	'treachery': 'lcg:EncounterCard',
+	'location': 'lcg:ScenarioCard',
+	'act': 'lcg:ScenarioCard',
+	'agenda': 'lcg:ScenarioCard',
+	'enemy_location': 'lcg:EncounterCard'
+} %}
+<script type="application/ld+json">
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "tcg": "https://tcg-schema.org/core#",
+    "lcg": "https://tcg-schema.org/lcg#",
+    "ah": "https://tcg-schema.org/arkham#"
+  },
+  "@graph": [
+    {% for card in cards %}
+    {
+      "@type": "tcg:Card",
+      "schema:name": {{ card.name|json_encode|raw }},
+      "tcg:inGame": { "@id": "ah:ArkhamHorrorLCG" },
+      "tcg:cardType": { "@id": "{{ type_mapping[card.type_code]|default('ah:AssetType') }}" },
+      "lcg:cardSide": { "@id": "{{ side_mapping[card.type_code]|default('lcg:PlayerCard') }}" },
+      "lcg:hasTrait": {{ card.traits|json_encode|raw }},
+      {% if card.cost is defined %}"tcg:cost": {{ card.cost|json_encode|raw }},{% endif %}
+      {% if card.xp is defined %}"tcg:xp": {{ card.xp|json_encode|raw }},{% endif %}
+      {% if card.health is defined %}"tcg:health": {{ card.health|json_encode|raw }},{% endif %}
+      {% if card.sanity is defined %}"tcg:sanity": {{ card.sanity|json_encode|raw }},{% endif %}
+      "schema:text": {{ card.text|striptags|json_encode|raw }},
+      "schema:description": {{ card.flavor|striptags|json_encode|raw }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}
+
 {% block main %}
 
 <style>
@@ -84,7 +139,7 @@
 </style>
 
 {% for card in cards %}
-<div class="card-block">
+<div class="card-block" vocab="https://tcg-schema.org/core#" prefix="ah: https://tcg-schema.org/arkham# lcg: https://tcg-schema.org/lcg# schema: https://schema.org/" typeof="Card">
 	<div class="card-block-info">
 		{% if card.type_code == "location" %}
 		{% include 'AppBundle:Search:card-back.html.twig' %}

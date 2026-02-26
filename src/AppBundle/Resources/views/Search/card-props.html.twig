@@ -24,20 +24,32 @@
 </style>
 
 <div class="card-info-block">
+	{% set type_mapping = {
+		'investigator': 'ah:InvestigatorType',
+		'asset': 'ah:AssetType',
+		'event': 'ah:EventType',
+		'skill': 'ah:SkillType',
+		'enemy': 'ah:EnemyType',
+		'treachery': 'ah:TreacheryType',
+		'location': 'ah:LocationType',
+		'act': 'ah:ActType',
+		'agenda': 'ah:AgendaType',
+		'enemy_location': 'ah:EnemyType'
+	} %}
 	<div>
-		<p class="card-type">{{ card.type_name }}{% if card.stage %}. Stage {{card.stage}}{% endif %}{% if card.slot %}. {{card.slot}}{% endif %}{% if card.subtype_name is defined %}. {{card.subtype_name}}{% endif %}</p>
+		<p class="card-type"><span property="tcg:cardType" resource="{{ type_mapping[card.type_code]|default('ah:AssetType') }}">{{ card.type_name }}</span>{% if card.stage %}. Stage {{card.stage}}{% endif %}{% if card.slot %}. {{card.slot}}{% endif %}{% if card.subtype_name is defined %}. {{card.subtype_name}}{% endif %}</p>
 
 		{% if card.traits %}
-		<p class="card-traits">{{ card.traits }}</p>
+		<p class="card-traits" property="lcg:hasTrait">{{ card.traits }}</p>
 		{% endif %}
 
 		{% if card.type_code == 'asset' or card.type_code == 'event' or card.xp %}
 			<p>
 			{% if card.type_code == 'asset' or card.type_code == 'event'%}
-			{% trans %}Cost{% endtrans %}: {{ macros.integer_or_x(card.cost) }}.
+			{% trans %}Cost{% endtrans %}: <span property="tcg:cost">{{ macros.integer_or_x(card.cost) }}</span>.
 			{% endif %}
 			{% if card.xp %}
-			{% trans %}XP{% endtrans %}: {{ card.xp }}.
+			{% trans %}XP{% endtrans %}: <span property="tcg:xp">{{ card.xp }}</span>.
 			{% endif %}
 			</p>
 		{% endif %}
