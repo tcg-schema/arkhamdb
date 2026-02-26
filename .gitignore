@@ -8,7 +8,7 @@
 /bin/*
 !bin/console
 /composer.phar
-/vendor/
+vendor/
 /web/bundles/
 tags
 /web/js/

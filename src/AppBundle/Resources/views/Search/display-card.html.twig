@@ -48,11 +48,14 @@
     {
       "@type": "tcg:Card",
       "schema:name": {{ card.name|json_encode|raw }},
+      "tcg:inGame": { "@id": "ah:ArkhamHorrorLCG" },
       "tcg:cardType": { "@id": "{{ type_mapping[card.type_code]|default('ah:AssetType') }}" },
       "lcg:cardSide": { "@id": "{{ side_mapping[card.type_code]|default('lcg:PlayerCard') }}" },
       "lcg:hasTrait": {{ card.traits|json_encode|raw }},
       {% if card.cost is defined %}"tcg:cost": {{ card.cost|json_encode|raw }},{% endif %}
       {% if card.xp is defined %}"tcg:xp": {{ card.xp|json_encode|raw }},{% endif %}
+      {% if card.health is defined %}"tcg:health": {{ card.health|json_encode|raw }},{% endif %}
+      {% if card.sanity is defined %}"tcg:sanity": {{ card.sanity|json_encode|raw }},{% endif %}
       "schema:text": {{ card.text|striptags|json_encode|raw }},
       "schema:description": {{ card.flavor|striptags|json_encode|raw }}
     }{% if not loop.last %},{% endif %}

@@ -1,0 +1,14 @@
+{
+    "name": "arkhamdb/mcp",
+    "description": "MCP server for ArkhamDB",
+    "require": {
+        "mcp/sdk": "^0.4.0",
+        "symfony/yaml": "^5.4 || ^6.4 || ^7.3 || ^8.0",
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\Mcp\\": "src/"
+        }
+    }
+}
